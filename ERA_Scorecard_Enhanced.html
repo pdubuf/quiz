@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ERA Scorecard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f1f7f5;
+      color: #333;
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+    }
+    h1, h2, h3 {
+      text-align: center;
+      color: #265c4b;
+    }
+    .section {
+      background: #fff;
+      border-left: 6px solid #88bfa1;
+      margin: 1rem 0;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .question {
+      margin: 0.8rem 0;
+    }
+    label {
+      display: block;
+      margin: 4px 0;
+    }
+    input[type="radio"] {
+      margin-right: 8px;
+    }
+    button {
+      display: block;
+      margin: 2rem auto;
+      padding: 10px 30px;
+      font-size: 1rem;
+      background-color: #4f9a81;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3f806a;
+    }
+    .results {
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-top: 2rem;
+      color: #265c4b;
+    }
+    .feedback {
+      font-weight: normal;
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .stage-visuals {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .stage-visuals div {
+      text-align: center;
+    }
+    .stage-visuals img {
+      height: 80px;
+      display: block;
+      margin: 0 auto 0.5rem;
+    }
+  
+@media (max-width: 600px) {
+  label {
+    font-size: 1rem;
+    display: block;
+  }
+  input[type="radio"] {
+    margin-bottom: 6px;
+  }
+}
+.feedback-block {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+</style>
+</head>
+<body>
+  <h1>ERA Scorecard</h1>
+  <p style="text-align:center;">A self-reflection tool for those on a recovery journey.<br><br><p id="progress" style="text-align:center; font-weight:bold;"></p>
+  Rate each question from 1 to 5:<br>1 = Not true at all, 5 = Very true</p>
+
+  <form id="scorecard">
+    <div class="section" id="questions"></div>
+    <button type="submit">See My Results</button>
+  </form>
+
+  <div class="results" id="results"></div>
+  <div class="feedback" id="feedback"></div>
+
+  <div class="stage-visuals">
+    <div><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Seed_icon.svg/120px-Seed_icon.svg.png" alt="Seed"><span>🌱 Seed</span></div>
+    <div><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Sprout_icon.svg/120px-Sprout_icon.svg.png" alt="Sprout"><span>🌿 Sprout</span></div>
+    <div><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Tree_icon.svg/120px-Tree_icon.svg.png" alt="Branching"><span>🌳 Branching</span></div>
+    <div><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Pine_tree_icon.svg/120px-Pine_tree_icon.svg.png" alt="Tree"><span>🌲 Tree</span></div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "I can sit with uncomfortable sensations without needing to escape.", cat: "Embodiment" },
+      { q: "I try to repair miscommunication or emotional distance when it happens.", cat: "Resonance" },
+      { q: "I check in with how my body feels before reacting to stress.", cat: "Embodiment" },
+      { q: "I’m aware of when I get stuck in old patterns or stories.", cat: "Awareness" },
+      { q: "I know how to ask for support or regulation from someone I trust.", cat: "Resonance" },
+      { q: "I sometimes feel connected to something bigger than myself (like community, spirit, nature, or purpose).", cat: "Awareness" },
+      { q: "I move my body in ways that help me feel more grounded or calm.", cat: "Embodiment" },
+      { q: "I reflect on how my behavior impacts the people around me.", cat: "Awareness" },
+      { q: "I notice how my emotional state changes around other people.", cat: "Resonance" },
+      { q: "I allow myself to feel emotions physically, even when they’re hard.", cat: "Embodiment" },
+      { q: "I’ve learned how to stay present even when someone else is upset.", cat: "Resonance" },
+      { q: "I can step back and observe my thoughts instead of being ruled by them.", cat: "Awareness" },
+      { q: "I’m learning to trust the messages my body gives me.", cat: "Embodiment" },
+      { q: "I can feel emotionally close to others without needing to be perfect.", cat: "Resonance" },
+      { q: "I’m learning how my past affects how I see the present.", cat: "Awareness" },
+      { q: "I feel more alive when I allow myself to feel my body deeply.", cat: "Embodiment" },
+      { q: "I often listen for what's not said in conversations.", cat: "Resonance" },
+      { q: "I recognize when I'm acting on autopilot.", cat: "Awareness" },
+      { q: "I use grounding or movement when I’m emotionally overwhelmed.", cat: "Embodiment" },
+      { q: "I know when to ask for space or connection in a relationship.", cat: "Resonance" }
+    ].sort(() => 0.5 - Math.random());
+
+    const feedbackText = {
+      Embodiment: ["🌱 Seed (build body awareness)", "🌿 Sprout (feel emotions/sensations)", "🌳 Branching (regulate and express)", "🌲 Tree (wholeness and vitality)"],
+      Resonance: ["🌱 Seed (notice others’ impact)", "🌿 Sprout (name emotions safely)", "🌳 Branching (clear boundaries)", "🌲 Tree (co-regulation and intimacy)"],
+      Awareness: ["🌱 Seed (observe thoughts)", "🌿 Sprout (notice patterns)", "🌳 Branching (self-inquiry)", "🌲 Tree (presence and spaciousness)"]
+    };
+
+    const feedbackSuggestions = {
+      Embodiment: [
+        "Start with breath and grounding exercises.",
+        "Practice naming what you feel in your body.",
+        "Explore movement or creative expression.",
+        "Commit to a daily embodied awareness practice."
+      ],
+      Resonance: [
+        "Notice how people make you feel, gently.",
+        "Name your feelings in safe relationships.",
+        "Set boundaries clearly and kindly.",
+        "Practice mutual presence and listening."
+      ],
+      Awareness: [
+        "Watch your thinking with kindness.",
+        "Write about your patterns and habits.",
+        "Use meditation or inquiry to explore triggers.",
+        "Explore perspectives beyond your own story."
+      ]
+    };
+
+    const form = document.getElementById('scorecard');
+    const container = document.getElementById('questions');
+    
+    const updateProgress = (current, total) => {
+      document.getElementById('progress').textContent = `Question ${current} of ${total}`;
+    };
+
+    questions.forEach((qObj, i) => {
+      const div = document.createElement('div');
+      div.classList.add('question');
+      div.innerHTML = `<fieldset><legend><strong>Q${i + 1}:</strong> ${qObj.q}</legend>` + [1,2,3,4,5].map(n => `
+        <label><input type="radio" name="q${i}" value="${n}" required> ${n}</label>`).join('') + `</fieldset>`;
+      container.appendChild(div);
+    });
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const scores = { Embodiment: 0, Resonance: 0, Awareness: 0 };
+      const counts = { Embodiment: 0, Resonance: 0, Awareness: 0 };
+
+      
+    const updateProgress = (current, total) => {
+      document.getElementById('progress').textContent = `Question ${current} of ${total}`;
+    };
+
+    questions.forEach((qObj, i) => {
+        const val = parseInt(data.get(`q${i}`));
+        if (!isNaN(val)) {
+          scores[qObj.cat] += val;
+          counts[qObj.cat]++;
+        }
+      });
+
+      
+      const totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
+      const totalMax = Object.values(counts).reduce((a, b) => a + b, 0) * 5;
+      const overallPercent = Math.round((totalScore / totalMax) * 100);
+      document.getElementById('results').textContent = `Your Growth Stage Feedback (${overallPercent}%)`;
+
+      const feedbackHTML = Object.keys(scores).map(cat => {
+        const max = counts[cat] * 5;
+        const index = getIndex(scores[cat], max);
+        return `<div class="feedback-block"><h3>${cat}</h3><p style="font-size:1.5rem;">${feedbackText[cat][index]}</p><p>${feedbackSuggestions[cat][index]}</p></div>`;
+      }).join('');
+      document.getElementById('feedback').innerHTML = feedbackHTML;
+    });
+
+    
+    function getIndex(score, max) {
+      const percentage = score / max;
+      if (percentage <= 0.25) return 0;
+      if (percentage <= 0.5) return 1;
+      if (percentage <= 0.75) return 2;
+      return 3;
+    }
+
+  </script>
+</body>
+</html>
